@@ -1,0 +1,15 @@
+" ~/.vimrc — minimal starting point
+
+set nocompatible
+set number
+set relativenumber
+set expandtab
+set tabstop=2
+set shiftwidth=2
+set smartindent
+set incsearch
+set ignorecase
+set smartcase
+set hidden
+set encoding=utf-8
+syntax on

@@ -1,0 +1,30 @@
+[user]
+	name = Joe Butler
+	# email intentionally left unset here — set per-machine or per-repo with
+	# `git config user.email you@example.com`, or use includeIf below to
+	# split work/personal identities.
+
+[core]
+	excludesfile = ~/.gitignore_global
+	editor = vim
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = false
+
+[push]
+	autoSetupRemote = true
+
+[color]
+	ui = auto
+
+[alias]
+	st = status -sb
+	co = checkout
+	br = branch
+	ci = commit
+	last = log -1 HEAD
+	unstage = restore --staged
+	amend = commit --amend --no-edit

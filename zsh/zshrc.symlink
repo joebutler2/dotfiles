@@ -1,0 +1,13 @@
+# ~/.zshrc — sources every topic's *.zsh file, then loads a local,
+# machine-specific override if one exists (never committed).
+
+DOTFILES_ROOT="$HOME/dotfiles"
+
+for file in "$DOTFILES_ROOT"/*/*.zsh; do
+  [ -r "$file" ] && source "$file"
+done
+unset file
+
+# Per-machine overrides that shouldn't live in the repo (secrets, PATH
+# quirks specific to one box, etc.)
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"

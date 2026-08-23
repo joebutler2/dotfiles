@@ -1,0 +1,10 @@
+# ~/.tmux.conf — minimal starting point
+
+set -g mouse on
+set -g history-limit 10000
+set -g base-index 1
+setw -g pane-base-index 1
+set -g renumber-windows on
+
+# reload config with prefix + r
+bind r source-file ~/.tmux.conf \; display-message "tmux config reloaded"

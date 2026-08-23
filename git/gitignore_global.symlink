@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# node
+node_modules/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# env
+.env
+.env.local
