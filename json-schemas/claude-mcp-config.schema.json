@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Claude Desktop / Claude Code MCP server configuration",
+  "description": "Unofficial schema for claude_desktop_config.json's mcpServers block, based on Claude Code's documented config format. No official schema is published by Anthropic or SchemaStore as of this writing.",
+  "type": "object",
+  "properties": {
+    "mcpServers": {
+      "type": "object",
+      "description": "Map of server name -> server definition.",
+      "additionalProperties": {
+        "$ref": "#/definitions/mcpServer"
+      }
+    }
+  },
+  "additionalProperties": true,
+  "definitions": {
+    "mcpServer": {
+      "oneOf": [
+        { "$ref": "#/definitions/stdioServer" },
+        { "$ref": "#/definitions/remoteServer" }
+      ]
+    },
+    "stdioServer": {
+      "type": "object",
+      "description": "A locally-spawned server communicating over stdio. This is the default when no \"type\" is given.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "stdio"
+        },
+        "command": {
+          "type": "string",
+          "description": "Executable to run, e.g. \"npx\", \"node\", or an absolute path."
+        },
+        "args": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Arguments passed to the command."
+        },
+        "env": {
+          "type": "object",
+          "description": "Environment variables to set for the spawned process.",
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "required": ["command"],
+      "additionalProperties": false
+    },
+    "remoteServer": {
+      "type": "object",
+      "description": "A remote server reached over HTTP, SSE, or WebSocket.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["http", "sse", "ws"]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Endpoint URL. Supports ${VAR} / ${VAR:-default} environment substitution."
+        },
+        "headers": {
+          "type": "object",
+          "description": "HTTP headers sent with each request, e.g. Authorization.",
+          "additionalProperties": { "type": "string" }
+        },
+        "oauth": {
+          "type": "object",
+          "description": "OAuth configuration for servers that require it.",
+          "properties": {
+            "clientId": { "type": "string" },
+            "clientSecret": { "type": "string" },
+            "callbackPort": { "type": "integer" }
+          },
+          "additionalProperties": true
+        }
+      },
+      "required": ["type", "url"],
+      "additionalProperties": false
+    }
+  }
+}
