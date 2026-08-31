@@ -96,4 +96,16 @@ case "$(uname)" in
     ;;
 esac
 
+# mise (https://mise.jdx.dev) isn't reliably packaged in apt/dnf/pacman, so
+# it's installed via its own official script rather than through the
+# per-distro package lists above. Homebrew already covers it on macOS via
+# the Brewfile; this is the fallback for everywhere else (and for macOS
+# without Homebrew).
+if ! command -v mise >/dev/null 2>&1; then
+  read -r -p "mise not found - install it via https://mise.run now? [y/N] " reply
+  if [[ "$reply" =~ ^[Yy]$ ]]; then
+    curl -fsSL https://mise.run | sh
+  fi
+fi
+
 info "done"

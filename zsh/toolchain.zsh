@@ -21,6 +21,11 @@ export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init - zsh)"
 
+# mise - installed via Brewfile (macOS) or script/bootstrap's fallback
+# installer (Linux), which installs to ~/.local/bin (already on PATH above).
+# https://mise.jdx.dev, replacing sdkman below over time.
+command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
+
 # sdkman - optional and on its way out in favor of mise. Set
 # DOTFILES_SKIP_SDKMAN=1 in ~/.zshrc.local to disable without editing this
 # file; once the mise migration is done, delete this block outright.
