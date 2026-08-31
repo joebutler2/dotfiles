@@ -35,8 +35,15 @@ changing files. It:
 
 1. Symlinks every `*.symlink` file into `$HOME` (backing up anything it
    would overwrite into `~/.dotfiles-backup/<timestamp>/`).
-2. On macOS, offers to run `brew bundle` against the `Brewfile` if Homebrew
-   is installed.
+2. Offers to install a common set of CLI tools (git, zsh, vim, tmux, tree,
+   node, python), picking whatever's native to the platform:
+   - **macOS**: `brew bundle` against the `Brewfile`, if Homebrew is
+     installed.
+   - **Linux**: whichever of `apt-get` / `dnf` / `pacman` is found, installing
+     from the matching `linux/packages.*` list.
+   If neither applies (no Homebrew on macOS, no recognized package manager
+   on Linux, or an unrecognized platform), this step is skipped with a
+   warning and everything else still runs.
 
 ## Adding something new
 
@@ -44,6 +51,13 @@ changing files. It:
    have one yet).
 2. Name it `<name>.symlink` if it should land directly in `$HOME`.
 3. Re-run `script/bootstrap`.
+
+## Adding a CLI tool to install
+
+Add the package name to `Brewfile` (macOS) and to each `linux/packages.*`
+file it exists in (package names occasionally differ across apt/dnf/pacman -
+e.g. `node` on Homebrew is `nodejs` on apt/dnf). Not every tool needs an
+entry in all four lists.
 
 ## Why this convention
 

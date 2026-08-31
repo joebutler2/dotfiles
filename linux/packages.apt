@@ -1,0 +1,8 @@
+# Package names for apt-based distros (Debian, Ubuntu, ...). Mirrors Brewfile.
+git
+zsh
+vim
+tmux
+tree
+nodejs
+python3

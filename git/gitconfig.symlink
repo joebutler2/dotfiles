@@ -1,10 +1,9 @@
 [user]
-	name = Joe Butler
-	# email intentionally left unset here — set per-machine or per-repo with
-	# `git config user.email you@example.com`, or use includeIf below to
-	# split work/personal identities.
+	name = joebutler2
+	email = TheVagabondProgrammer@proton.me
 
 [core]
+	autocrlf = input
 	excludesfile = ~/.gitignore_global
 	editor = vim
 

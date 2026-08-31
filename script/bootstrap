@@ -41,13 +41,59 @@ while IFS= read -r -d '' src; do
   link_file "$src" "$dst"
 done < <(find "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -print0)
 
-if [ "$(uname)" = "Darwin" ] && command -v brew >/dev/null 2>&1; then
-  if [ -f "$DOTFILES_ROOT/Brewfile" ]; then
-    read -r -p "Run 'brew bundle' against Brewfile now? [y/N] " reply
-    if [[ "$reply" =~ ^[Yy]$ ]]; then
-      brew bundle --file="$DOTFILES_ROOT/Brewfile"
-    fi
-  fi
+if [ -x "$DOTFILES_ROOT/claude/install.sh" ]; then
+  "$DOTFILES_ROOT/claude/install.sh"
 fi
+
+install_packages_from_list() {
+  local list_file="$1"
+  shift
+  local install_cmd=("$@")
+
+  [ -f "$list_file" ] || return 0
+
+  local packages=()
+  while IFS= read -r line; do
+    line="${line%%#*}"
+    line="$(echo "$line" | xargs)"
+    [ -n "$line" ] && packages+=("$line")
+  done < "$list_file"
+
+  [ "${#packages[@]}" -eq 0 ] && return 0
+
+  read -r -p "Install ${#packages[@]} package(s) (${install_cmd[*]})? [y/N] " reply
+  if [[ "$reply" =~ ^[Yy]$ ]]; then
+    "${install_cmd[@]}" "${packages[@]}"
+  fi
+}
+
+case "$(uname)" in
+  Darwin)
+    if command -v brew >/dev/null 2>&1; then
+      if [ -f "$DOTFILES_ROOT/Brewfile" ]; then
+        read -r -p "Run 'brew bundle' against Brewfile now? [y/N] " reply
+        if [[ "$reply" =~ ^[Yy]$ ]]; then
+          brew bundle --file="$DOTFILES_ROOT/Brewfile"
+        fi
+      fi
+    else
+      warn "Homebrew not found - skipping package install (see https://brew.sh)"
+    fi
+    ;;
+  Linux)
+    if command -v apt-get >/dev/null 2>&1; then
+      install_packages_from_list "$DOTFILES_ROOT/linux/packages.apt" sudo apt-get install -y
+    elif command -v dnf >/dev/null 2>&1; then
+      install_packages_from_list "$DOTFILES_ROOT/linux/packages.dnf" sudo dnf install -y
+    elif command -v pacman >/dev/null 2>&1; then
+      install_packages_from_list "$DOTFILES_ROOT/linux/packages.pacman" sudo pacman -S --needed
+    else
+      warn "no supported package manager found (apt-get/dnf/pacman) - skipping package install"
+    fi
+    ;;
+  *)
+    warn "unrecognized platform $(uname) - skipping package install"
+    ;;
+esac
 
 info "done"

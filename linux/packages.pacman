@@ -1,0 +1,9 @@
+# Package names for pacman-based distros (Arch, ...). Mirrors Brewfile.
+git
+zsh
+vim
+tmux
+tree
+nodejs
+npm
+python

@@ -1,0 +1,8 @@
+# Package names for dnf-based distros (Fedora, RHEL, ...). Mirrors Brewfile.
+git
+zsh
+vim
+tmux
+tree
+nodejs
+python3
