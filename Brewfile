@@ -9,3 +9,4 @@ brew "tree"
 brew "mise"
 brew "node"
 brew "python"
+brew "beads"  # `bd` — dependency-graph issue tracker for AI coding agents

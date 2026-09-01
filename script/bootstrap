@@ -108,4 +108,16 @@ if ! command -v mise >/dev/null 2>&1; then
   fi
 fi
 
+# beads (`bd`) is in homebrew-core, so the Brewfile step above covers macOS
+# and any Linux box with Homebrew. It isn't packaged in apt/dnf/pacman, so
+# this is the fallback for everywhere else, same pattern as mise above.
+if ! command -v bd >/dev/null 2>&1; then
+  read -r -p "beads (bd) not found - install it via the official installer now? [y/N] " reply
+  if [[ "$reply" =~ ^[Yy]$ ]]; then
+    curl -fsSL https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh -o /tmp/beads-install.sh
+    bash /tmp/beads-install.sh
+    rm -f /tmp/beads-install.sh
+  fi
+fi
+
 info "done"
