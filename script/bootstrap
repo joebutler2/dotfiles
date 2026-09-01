@@ -120,6 +120,12 @@ if ! command -v bd >/dev/null 2>&1; then
   fi
 fi
 
+# mise's global config lives at ~/.config/mise/config.toml, which doesn't
+# fit the flat *.symlink -> ~/.name convention used above, so link it
+# explicitly.
+mkdir -p "$HOME/.config/mise"
+link_file "$DOTFILES_ROOT/mise/config.toml" "$HOME/.config/mise/config.toml"
+
 # Migration notice: toolchain.zsh used to unconditionally `eval pyenv init`.
 # That's gone (see docs/adr/0001-no-pyenv.md - we use mise for Python
 # versions and uv for packages/venvs now). On a machine that still has pyenv

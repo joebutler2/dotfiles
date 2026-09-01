@@ -1,0 +1,17 @@
+# mise global config - symlinked to ~/.config/mise/config.toml by
+# script/bootstrap. https://mise.jdx.dev
+#
+# Python versions are managed here instead of pyenv - see
+# docs/adr/0001-no-pyenv.md. Package/dependency management and venvs still
+# go through uv, not mise.
+#
+# This just pins a sane default so `python3` resolves to something via mise
+# on a fresh machine. Override per-project with a `.mise.toml` /
+# `mise.toml` in that project (or `mise use python@3.x` from inside it).
+
+[tools]
+python = "3.12"
+
+[settings]
+# Prefer prebuilt/official Python binaries over compiling from source.
+python.compile = false
