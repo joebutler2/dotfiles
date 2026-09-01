@@ -17,13 +17,10 @@ export PATH="/opt/homebrew/share/google-cloud-sdk/bin:$PATH"
 export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
 
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - zsh)"
-
 # mise - installed via Brewfile (macOS) or script/bootstrap's fallback
 # installer (Linux), which installs to ~/.local/bin (already on PATH above).
-# https://mise.jdx.dev, replacing sdkman below over time.
+# https://mise.jdx.dev, replacing sdkman below over time. Also our Python
+# version manager - see docs/adr/0001-no-pyenv.md for why we don't use pyenv.
 command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 
 # sdkman - optional and on its way out in favor of mise. Set

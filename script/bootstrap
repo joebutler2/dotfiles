@@ -120,4 +120,15 @@ if ! command -v bd >/dev/null 2>&1; then
   fi
 fi
 
+# Migration notice: toolchain.zsh used to unconditionally `eval pyenv init`.
+# That's gone (see docs/adr/0001-no-pyenv.md - we use mise for Python
+# versions and uv for packages/venvs now). On a machine that still has pyenv
+# installed, just warn rather than touching it - don't silently uninstall or
+# unlink someone's existing setup.
+if [ -d "$HOME/.pyenv" ] || command -v pyenv >/dev/null 2>&1; then
+  warn "pyenv detected on this machine, but toolchain.zsh no longer initializes it (see docs/adr/0001-no-pyenv.md)"
+  warn "Python versions now go through mise (mise use python@x.y); packages/venvs through uv."
+  warn "pyenv-managed environments will keep working until you migrate, but won't be added to PATH by new shells."
+fi
+
 info "done"
