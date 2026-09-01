@@ -10,3 +10,4 @@ brew "mise"
 brew "node"
 brew "python"
 brew "beads"  # `bd` — dependency-graph issue tracker for AI coding agents
+brew "glow"  # CLI markdown renderer

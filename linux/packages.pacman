@@ -7,3 +7,4 @@ tree
 nodejs
 npm
 python
+glow  # CLI markdown renderer

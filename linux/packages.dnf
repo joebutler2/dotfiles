@@ -6,3 +6,7 @@ tmux
 tree
 nodejs
 python3
+
+# glow (CLI markdown renderer) isn't in default dnf repos - install via
+# Charmbracelet's own repo (https://github.com/charmbracelet/glow#installation)
+# or Homebrew on Linux if you have it.
