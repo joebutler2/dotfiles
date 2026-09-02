@@ -11,3 +11,6 @@ brew "node"
 brew "python"
 brew "beads"  # `bd` — dependency-graph issue tracker for AI coding agents
 brew "glow"  # CLI markdown renderer
+
+tap "stablyai/orca"
+cask "stablyai/orca/orca"  # Orca — Stably's agentic dev environment (ADE)
