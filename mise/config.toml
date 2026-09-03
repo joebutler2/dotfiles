@@ -11,6 +11,7 @@
 
 [tools]
 python = "3.12"
+rust = "stable"
 
 [settings]
 # Prefer prebuilt/official Python binaries over compiling from source.
