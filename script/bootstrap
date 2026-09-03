@@ -45,6 +45,10 @@ if [ -x "$DOTFILES_ROOT/claude/install.sh" ]; then
   "$DOTFILES_ROOT/claude/install.sh"
 fi
 
+if [ -x "$DOTFILES_ROOT/pi/install.sh" ]; then
+  "$DOTFILES_ROOT/pi/install.sh"
+fi
+
 install_packages_from_list() {
   local list_file="$1"
   shift
