@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+#
+# install-sync-cron — schedule script/sync to run once a day, as the
+# current user (no root/sudo). Picks the right mechanism per platform:
+#   - macOS: a user LaunchAgent (~/Library/LaunchAgents)
+#   - Linux (systemd, e.g. Omarchy/Arch, Ubuntu, Fedora): a user
+#     systemd timer (~/.config/systemd/user)
+#
+# Safe to re-run - overwrites its own unit/plist and reloads it.
+
+set -euo pipefail
+
+DOTFILES_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SYNC_SCRIPT="$DOTFILES_ROOT/script/sync"
+LABEL="com.dotfiles.sync"
+
+info() { printf '\033[1;34m[install-sync-cron]\033[0m %s\n' "$1"; }
+ok()   { printf '\033[1;32m[ok]\033[0m %s\n' "$1"; }
+err()  { printf '\033[1;31m[error]\033[0m %s\n' "$1" >&2; }
+
+install_macos() {
+  local plist_dir="$HOME/Library/LaunchAgents"
+  local plist="$plist_dir/$LABEL.plist"
+  mkdir -p "$plist_dir" "$HOME/Library/Logs"
+
+  cat > "$plist" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>$LABEL</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$SYNC_SCRIPT</string>
+  </array>
+  <key>StartInterval</key>
+  <integer>86400</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>$HOME/Library/Logs/dotfiles-sync.log</string>
+  <key>StandardErrorPath</key>
+  <string>$HOME/Library/Logs/dotfiles-sync.log</string>
+</dict>
+</plist>
+EOF
+
+  launchctl unload "$plist" >/dev/null 2>&1 || true
+  launchctl load "$plist"
+  ok "installed LaunchAgent -> $plist (runs daily, and once now)"
+}
+
+install_systemd() {
+  if ! command -v systemctl >/dev/null 2>&1; then
+    err "systemd not found - no supported scheduler for this Linux setup"
+    exit 1
+  fi
+
+  local unit_dir="$HOME/.config/systemd/user"
+  mkdir -p "$unit_dir"
+
+  cat > "$unit_dir/dotfiles-sync.service" <<EOF
+[Unit]
+Description=Pull latest dotfiles and re-run bootstrap
+
+[Service]
+Type=oneshot
+ExecStart=$SYNC_SCRIPT
+EOF
+
+  cat > "$unit_dir/dotfiles-sync.timer" <<EOF
+[Unit]
+Description=Daily dotfiles sync
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+
+  systemctl --user daemon-reload
+  systemctl --user enable --now dotfiles-sync.timer
+  ok "installed systemd user timer -> $unit_dir/dotfiles-sync.{service,timer} (runs daily)"
+  info "check status with: systemctl --user status dotfiles-sync.timer"
+}
+
+case "$(uname)" in
+  Darwin)
+    install_macos
+    ;;
+  Linux)
+    install_systemd
+    ;;
+  *)
+    err "unsupported platform $(uname)"
+    exit 1
+    ;;
+esac
+
+info "logs land in $DOTFILES_ROOT/.sync.log (and, on macOS, ~/Library/Logs/dotfiles-sync.log)"

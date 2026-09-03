@@ -5,3 +5,4 @@
 # Pi coding agent — do NOT track sensitive files
 # auth.json contains API keys & OAuth tokens. Handle manually.
 .pi/agent/auth.json
+.sync.log

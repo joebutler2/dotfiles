@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+#
+# sync — pull the latest dotfiles and re-run bootstrap unattended.
+#
+# Meant to be invoked by the scheduled job installed via
+# script/install-sync-cron (a macOS LaunchAgent or a Linux systemd user
+# timer), but safe to run by hand too. Logs to $DOTFILES_ROOT/.sync.log so a
+# scheduled run leaves a trail to check.
+
+set -euo pipefail
+
+DOTFILES_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+LOG_FILE="$DOTFILES_ROOT/.sync.log"
+
+log() { printf '%s [sync] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$1" | tee -a "$LOG_FILE"; }
+
+cd "$DOTFILES_ROOT"
+
+if [ -n "$(git status --porcelain)" ]; then
+  log "working tree has local changes - skipping pull, running bootstrap on current state"
+else
+  log "pulling latest"
+  git pull --ff-only >>"$LOG_FILE" 2>&1
+fi
+
+log "running bootstrap --yes"
+"$DOTFILES_ROOT/script/bootstrap" --yes >>"$LOG_FILE" 2>&1
+log "done"
