@@ -20,3 +20,5 @@ __pycache__/
 # env
 .env
 .env.local
+
+**/.claude/.cc-writes/
