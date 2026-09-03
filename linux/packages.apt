@@ -5,6 +5,7 @@ vim
 tmux
 tree
 silversearcher-ag
+fd-find
 nodejs
 python3
 

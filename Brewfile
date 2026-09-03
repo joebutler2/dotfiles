@@ -7,6 +7,7 @@ brew "vim"
 brew "tmux"
 brew "tree"
 brew "the_silver_searcher"  # ag — fast code search
+brew "fd"  # fast, user-friendly alternative to find
 brew "mise"
 brew "node"
 brew "python"
